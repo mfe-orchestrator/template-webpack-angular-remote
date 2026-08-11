@@ -1,6 +1,7 @@
 {
   "name": "template-webpack-angular-remote",
   "version": "1.0.0",
+  "packageManager": "pnpm@11.21.0",
   "description": "Webpack Module Federation Remote Template with Angular",
   "scripts": {
     "dev": "webpack serve --mode development",
@@ -33,7 +34,7 @@
     "serve": "^14.2.5",
     "style-loader": "^4.0.0",
     "typescript": "~5.9.3",
-    "webpack": "^5.103.0",
+    "webpack": "^5.109.2",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2"
   }

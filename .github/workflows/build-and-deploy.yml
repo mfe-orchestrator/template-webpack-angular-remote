@@ -1,0 +1,60 @@
+name: 🚀 Build and deploy
+
+on:
+  push:
+    tags:
+      - '*'
+
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: 'Version to release'
+
+# ─── Per project values, change these ────────────────────────────────────────
+# MICROFRONTEND_SLUG    the slug of this microfrontend in the orchestrator.
+#                       Set it as a repository variable (Settings ▸ Variables)
+#                       or replace the expression below with the literal slug.
+# ORCHESTRATOR_DOMAIN   base URL of your orchestrator console. Leave unset to
+#                       use the public one.
+#
+# The API key is a repository *secret*, never a variable and never a literal:
+#   Settings ▸ Secrets and variables ▸ Actions ▸ MICROFRONTEND_ORCHESTRATOR_API_KEY
+# ─────────────────────────────────────────────────────────────────────────────
+env:
+  MICROFRONTEND_SLUG: ${{ vars.MICROFRONTEND_SLUG }}
+  ORCHESTRATOR_DOMAIN: ${{ vars.ORCHESTRATOR_DOMAIN || 'https://console.mfe-orchestrator.dev' }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: 🔄 Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
+    - name: ⚙️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'pnpm'
+        cache-dependency-path: '**/pnpm-lock.yaml'
+
+    - name: 🔧 Install Dependencies
+      run: pnpm install
+
+    - name: 🏗️ Build
+      run: pnpm build
+
+    - name: 🚀 Publish to MFE Orchestrator
+      uses: mfe-orchestrator/github-action@0.0.29
+      with:
+        apikey: ${{ secrets.MICROFRONTEND_ORCHESTRATOR_API_KEY }}
+        microfrontend-slug: ${{ env.MICROFRONTEND_SLUG }}
+        domain: ${{ env.ORCHESTRATOR_DOMAIN }}
+        file-path: './dist'
+        version: ${{ inputs.version || github.ref_name }}

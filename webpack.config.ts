@@ -1,8 +1,15 @@
-const { AngularWebpackPlugin } = require('@ngtools/webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { ModuleFederationPlugin } = require('webpack').container;
+import { AngularWebpackPlugin } from '@ngtools/webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack, { type Configuration } from 'webpack';
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
-module.exports = {
+const { ModuleFederationPlugin } = webpack.container;
+
+interface WebpackConfiguration extends Configuration {
+  devServer?: DevServerConfiguration;
+}
+
+const config: WebpackConfiguration = {
   entry: './src/index',
   mode: 'development',
   devServer: {
@@ -56,3 +63,5 @@ module.exports = {
     }),
   ],
 };
+
+export default config;

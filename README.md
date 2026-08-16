@@ -30,7 +30,7 @@ pnpm build      # production build into dist/
 │   └── index.ts                             # webpack entry, defers to bootstrap
 ├── package.json
 ├── tsconfig.json
-└── webpack.config.js                        # federation config
+└── webpack.config.ts                        # federation config
 ```
 
 ## What this remote exposes
@@ -41,7 +41,7 @@ pnpm build      # production build into dist/
 
 Federation name `remote`, entry file `dist/remoteEntry.js`.
 
-Add more in the `exposes` map of `webpack.config.js`. Anything you expose there becomes importable from a
+Add more in the `exposes` map of `webpack.config.ts`. Anything you expose there becomes importable from a
 host as `<remote-name>/<key>`.
 
 A host does not hardcode this remote's URL: it asks the orchestrator for it by slug. See the host
@@ -51,7 +51,7 @@ templates for the other side of the wiring.
 
 `pnpm build` writes to `dist/`. The federation entry lands at **`dist/remoteEntry.js`**, which is the `entryPoint` the marketplace entry declares.
 
-Check it after any change to `webpack.config.js`: the orchestrator serves exactly that path, so a build that
+Check it after any change to `webpack.config.ts`: the orchestrator serves exactly that path, so a build that
 puts the entry somewhere else is broken.
 
 ## Deploying

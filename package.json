@@ -43,7 +43,7 @@
     "style-loader": "^4.0.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.3",
-    "webpack": "^5.109.2",
+    "webpack": "^5.110.1",
     "webpack-cli": "^7.2.2",
     "webpack-dev-server": "^6.0.0",
     "zone.js": "^0.15.1"

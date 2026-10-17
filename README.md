@@ -39,13 +39,37 @@ pnpm build      # production build into dist/
 | --- | --- |
 | `./Button` | `src/app/button.component.ts` |
 
-Federation name `remote`, entry file `dist/remoteEntry.js`.
+Federation name `exampleremote`, entry file `dist/remoteEntry.js`.
+
+### The federation name
+
+```ts
+name: 'exampleremote', // mfe-orchestrator:federation-name
+```
+
+A webpack host does not import this remote by its URL: it injects `remoteEntry.js` and then looks
+the container up **by this name**. When the orchestrator console creates a microfrontend from this
+template, it rewrites the string on the line carrying the `mfe-orchestrator:federation-name` marker
+to the federation name of the microfrontend's slug: slashes become underscores and dashes go, so
+`checkout-new` becomes `checkoutnew`. That is the same name the console writes into the hosts it
+configures, and the `nameToIntegrate` it serves in the manifest. Keep the marker on that line; if
+you rename the container by hand, use that same derived name.
 
 Add more in the `exposes` map of `webpack.config.ts`. Anything you expose there becomes importable from a
 host as `<remote-name>/<key>`.
 
-A host does not hardcode this remote's URL: it asks the orchestrator for it by slug. See the host
-templates for the other side of the wiring.
+A host does not hardcode this remote's URL: it asks the orchestrator for it by slug, through the
+client SDK (`@mfe-orchestrator-hub/client` 0.3.0 or later):
+
+```js
+remotes: {
+  // key: what the host imports from; 'checkout-new': the slug in the orchestrator;
+  // 'checkoutnew': this remote's federation name
+  checkoutnew: "promise globalThis.__MFE_ORCHESTRATOR__.loadWebpackRemote('checkout-new', 'checkoutnew')",
+},
+```
+
+See the host templates for the other side of the wiring.
 
 ## Build output
 

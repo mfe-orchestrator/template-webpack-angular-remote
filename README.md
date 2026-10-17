@@ -1,11 +1,11 @@
 # Webpack & Angular — remote microfrontend template
 
 Starter template for the [MFE Orchestrator](https://github.com/mfe-orchestrator), listed in the
-marketplace as `webpack-remote-angular`. Webpack 5 + Angular 21, wired as a **remote**.
+marketplace as `webpack-remote-angular`. Webpack 5 + Angular 22, wired as a **remote**.
 
 ## Requirements
 
-- Node.js 20 or newer
+- Node.js 22.22.3, 24.15 or newer (what Angular 22 supports)
 - [pnpm](https://pnpm.io) 10 or newer
 
 ## Getting started
@@ -76,7 +76,8 @@ expressions in the `env:` block at the top of the workflow.
 
 ## Notes
 
-- Angular is compiled ahead of time by `AngularWebpackPlugin` from [`@ngtools/webpack`](https://npmjs.com/package/@ngtools/webpack) — the same compiler the Angular CLI drives, wired into a plain webpack config. There is no `angular.json` and no CLI builder here, which is what keeps `remoteEntry.js` at the root of `dist/`.
+- Angular is compiled ahead of time by `AngularWebpackPlugin` from [`@ngtools/webpack`](https://npmjs.com/package/@ngtools/webpack) — the same compiler the Angular CLI drives, wired into a plain webpack config. There is no `angular.json` and no CLI builder here, which is what keeps `remoteEntry.js` at the root of `dist/`. The Angular packages themselves ship partially compiled, so `babel-loader` runs the Angular linker (`@angular/compiler-cli/linker/babel`) over `node_modules`, as the CLI does; drop that rule and the app fails at bootstrap with "needs to be compiled using the JIT compiler".
+- Angular 22 marks `@ngtools/webpack` as deprecated in favour of the esbuild based `@angular/build`. It is still the current release and works; the Vite & Angular templates are the esbuild based alternative.
 - Change detection is zoneless, so `zone.js` is never loaded. Drop `provideZonelessChangeDetection()` from `src/bootstrap.ts` and add `import 'zone.js'` if you want the zone based scheduler back.
 - The entry point only does `import('./bootstrap')`. That indirection lets Module Federation negotiate the shared scope before any Angular code runs — keep it.
 
